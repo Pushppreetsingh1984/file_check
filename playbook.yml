@@ -10,17 +10,13 @@
       stat:
         path: "{{ item.name }}"
       with_items: "{{ files }}"
-      register: test
-
-    - name: giving var to register
-      debug:
-        var: test
+      register: make
 
     - name: checking for checksum
       debug:
         msg: "checksum correct"
       when: '"{{ item.item.checksum }}" == "{{ item.stat.checksum }}"'
-      with_items: "{{ test.result }}" 
+      with_items: "{{ make.results }}" 
 
 
 
@@ -28,6 +24,6 @@
       debug:
         msg: "checksum not found"
       when: '"{{ item.item.checksum }}" != "{{ item.stat.checksum }}"'
-      with_items: "{{ test.result }}"
+      with_items: "{{ make.results }}"
 
-
+...
