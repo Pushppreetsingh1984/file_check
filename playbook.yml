@@ -1,0 +1,33 @@
+---
+- name: checking for integrity
+  hosts: all
+  become: yes
+  vars_files:
+    - files_list.yml
+
+  tasks:
+    - name: register ouput
+      stat:
+        path: "{{ item.name }}"
+      with_items: "{{ files }}"
+      register: test
+
+    - name: giving var to register
+      debug:
+        var: test
+
+    - name: checking for checksum
+      debug:
+        msg: "checksum correct"
+      when: '"{{ item.item.checksum }}" == "{{ item.stat.checksum }}"'
+      with_items: "{{ test.result }}" 
+
+
+
+    - name: checksum not found
+      debug:
+        msg: "checksum not found"
+      when: '"{{ item.item.checksum }}" != "{{ item.stat.checksum }}"'
+      with_items: "{{ test.result }}"
+
+
