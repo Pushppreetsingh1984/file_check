@@ -1,0 +1,24 @@
+---
+- name: checking for checksum
+  hosts: all
+  become: yes
+  vars_files:
+    - files_list.yml
+  tasks:
+    - name: registring outpt
+      stat:
+        path: "{{ item.name }}"
+      with_items: "{{ files }}"
+      register: test
+
+    - debug:
+        msg: " check sum correct"
+      when: '"{{ item.item.checksum }}" == "{{ item.stat.checksum }}"'
+      with_items: "{{ test.results }}"
+
+    - debug:
+        msg: " check sum not correct"
+      when: '"{{ item.item.checksum }}" != "{{ item.stat.checksum }}"'
+      with_items: "{{ test.results }}"
+...
+
